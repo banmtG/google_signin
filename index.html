@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+      const backendUrl = "https://script.google.com/macros/s/AKfycbxe5yCLXEIPMriNwTmg5Y1TUOkrNz0H1M3B7uPSaIXAwC2mNHZdr3PkJzPRM2jx6I8iAQ/exec"; // Replace with your Apps Script Web App URL https://script.google.com/home/projects/1_EB72AQ8PokpJ7Qct9wiCZpDIk5Jtcg8MfMd6Mdg86e2o7oH4C7i36qH/edit
+
+      function handleCredentialResponse(response) {
+        fetch(backendUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: response.credential })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById("status").innerText = "Login failed.";
+          } else {
+            document.getElementById("status").innerText = "Hello, " + data.name + " (" + data.email + ")";
+          }
+        })
+        .catch(console.error);
+      }
+
+      window.onload = () => {
+        google.accounts.id.initialize({
+          client_id: "842799415320-ujd4fodvctbgrc6jdfkb596opkiva859.apps.googleusercontent.com", // Replace with your OAuth Client ID
+          callback: handleCredentialResponse
+        });
+        google.accounts.id.renderButton(
+          document.getElementById("g_id_signin"),
+          { theme: "outline", size: "large" }
+        );
+        google.accounts.id.prompt(); // Optional: show One Tap
+      };
+    </script>
+  </head>
+  <body>
+    <h2>Login with Google</h2>
+    <div id="g_id_signin"></div>
+    <p id="status"></p>
+  </body>
+</html>

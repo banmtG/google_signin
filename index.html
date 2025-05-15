@@ -14,6 +14,8 @@
         })
         .then(res => res.json())
         .then(data => {
+            console.log(data); // ← Add this
+
           if (data.error) {
             document.getElementById("status").innerText = "Login failed.";
           } else {
